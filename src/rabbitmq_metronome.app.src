@@ -5,4 +5,5 @@
   {registered, []},
   {mod, {rabbit_metronome, []}},
   {env, [{exchange, <<"metronome">>}]},
+  {broker_version_requirements, []},
   {applications, [kernel, stdlib, rabbit, amqp_client]}]}.
