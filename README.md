@@ -48,5 +48,21 @@ rabbitmq_pg_auth,
 ```
 
 The configuration also provides a _predefined_ username and password. This is useful as an _escape hatch_, 
-for example, when the postgresql is down for some reason.  
-     The plugin checks if the username and password are present in a table, names _authentication_.  
+for example, when the postgresql is down for some reason. The plugin checks if the username and password are present in a table, names _authentication_. 
+
+```
+ % psql
+Password: 
+psql (9.5.6)
+Type "help" for help.
+
+atul=# select * from authentication ;
+ id | name  | password 
+----+-------+----------
+  1 | atul  | atul123
+  2 | sunil | sunil123
+(2 rows)
+
+atul=# 
+```
+The password will usually be encrypted. Externalizing the query is under progress. This will allow you to tweak the authentication query itself, the way you want. 
