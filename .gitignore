@@ -13,3 +13,6 @@
 
 /rabbitmq_metronome.d
 /rabbitmq_pg_auth.d
+_config.yaml
+build.sh
+index.html
