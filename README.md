@@ -4,11 +4,11 @@ authorisation (determining what permissions they have) by connecting to a postgr
 
 Note: it's at an early stage of development, and could be made rather more robust.
 
-Downloading
+# Downloading
 
-Currently the plugin is under review. You can build it however, and use it.
+Currently the plugin is under review. You can build it however yourself, and use it.
 
-Building
+# Building
 
 You can build and install it like any other plugin (see the plugin development guide).
 
