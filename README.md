@@ -1,6 +1,7 @@
 This plugin enables RabbitMQ to perform authentication (determining who can log in) and 
 authorisation (determining what permissions they have) by connecting to a postgresql database.
-   Right now, only the authentication part is implemented. The authorisation is in progress. 
+   Right now, only the authentication part is implemented. Work on the authorisation feature is 
+in progress.
 
 Note: it's at an early stage of development, and could be made rather more robust.
 
