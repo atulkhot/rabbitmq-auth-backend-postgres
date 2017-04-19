@@ -24,6 +24,7 @@ To enable the plugin, set the value of the auth_backends configuration item for 
           auth_backends, [rabbit_auth_backend_internal,
                           rabbit_pgauth_worker]
         }
+       
 ```
 
 # Configuring the plugin
@@ -31,6 +32,7 @@ To enable the plugin, set the value of the auth_backends configuration item for 
 You need to configure the plugin to know how to connect to the postgres database.  
 
 Here is a `rabbitmq.conf` example  
+
 ```
 rabbitmq_pg_auth,
     [
@@ -44,5 +46,7 @@ rabbitmq_pg_auth,
     ]
   }
 ```
+
 The configuration also provides a _predefined_ username and password. This is useful as an _escape hatch_, 
 for example, when the postgresql is down for some reason.  
+     The plugin checks if the username and password are present in a table, names _authentication_.  
