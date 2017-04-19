@@ -7,16 +7,20 @@
 
 -behaviour(gen_server).
 -behaviour(rabbit_authn_backend).
+-behaviour(rabbit_authz_backend).
 
 -export([start_link/0]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
   terminate/2, code_change/3,
-  user_login_authentication/2, user_login_authorization/1]).
+  user_login_authentication/2, user_login_authorization/1,
+  check_vhost_access/3, check_resource_access/3, check_topic_access/4]).
 
 -include_lib("amqp_client/include/amqp_client.hrl").
 
 -define(SERVER, ?MODULE).
+
+-define(CHECK_RESOURCE_ACCESS_HEADERS, [username, vhost, resource, name, permission]).
 
 -record(state, {}).
 
@@ -32,6 +36,43 @@ start_link() ->
 
 init([]) ->
   {ok, #state{}}.
+
+check_resource_access(#auth_user{username = Username},
+    #resource{virtual_host = VHost, kind = Type, name = Name},
+    Permission) ->
+  gen_server:call(?SERVER, {check_resource, [{username, Username},
+    {vhost, VHost},
+    {resource, Type},
+    {name, Name},
+    {permission, Permission}]},
+    infinity).
+
+check_vhost_access(#auth_user{username = Username}, VHost, _Sock) ->
+  gen_server:call(?SERVER, {check_vhost, [{username, Username},
+    {vhost, VHost}]},
+    infinity).
+
+check_topic_access(#auth_user{username = Username},
+    #resource{virtual_host = VHost, kind = topic = Type, name = Name},
+    Permission,
+    Context) ->
+  OptionsHeaders = context_as_headers(Context),
+  gen_server:call(?SERVER, {check_topic, [{username,   Username},
+    {vhost,      VHost},
+    {resource,   Type},
+    {name,       Name},
+    {permission, Permission}] ++ OptionsHeaders},
+    infinity).
+
+context_as_headers(Options) when is_map(Options) ->
+  % filter options that would erase fixed parameters
+  [{rabbit_data_coercion:to_atom(Key), maps:get(Key, Options)}
+    || Key <- maps:keys(Options),
+    lists:member(
+      rabbit_data_coercion:to_atom(Key),
+      ?CHECK_RESOURCE_ACCESS_HEADERS) =:= false];
+context_as_headers(_) ->
+  [].
 
 user_login_authentication(Username, AuthProps) ->
   gen_server:call(?SERVER, {login, Username, AuthProps}, infinity).
@@ -91,7 +132,16 @@ handle_call({login, Username, AuthProps}, _From, State) ->
           _ -> {refused, "Denied by Metronome plugin", []}
         end,
   ok = epgsql:close(CONN),
-  {reply, Res, State}.
+  {reply, Res, State};
+
+handle_call({check_vhost, _Args}, _From, State) ->
+  {reply, true, State};
+
+handle_call({check_resource, _Args}, _From, State) ->
+  {reply, true, State};
+
+handle_call({check_topic, _Args}, _From, State) ->
+  {reply, true, State}.
 
 handle_cast(_, State) ->
   {noreply, State}.
