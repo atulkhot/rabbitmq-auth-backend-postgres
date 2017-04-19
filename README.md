@@ -10,11 +10,21 @@ Currently the plugin is under review. You can build it yourself, and use it.
 
 # Building
 
-You can build and install it like any other plugin (see the plugin development guide).
+You can build and install it like any other plugin (see the plugin development guide).  
 
 # Enabling the plugin
 
 To enable the plugin, set the value of the auth_backends configuration item for the rabbit application to include _rabbit_pgauth_worker_. The _auth_backends_ is a list of authentication providers to try in order. 
+
+```
+{
+    rabbit,
+      [
+        {
+          auth_backends, [rabbit_auth_backend_internal,
+                          rabbit_pgauth_worker]
+        }
+```
 
 # Configuring the plugin
 
