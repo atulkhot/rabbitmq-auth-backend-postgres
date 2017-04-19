@@ -4,7 +4,7 @@ authorisation (determining what permissions they have) by connecting to a postgr
 
 Note: it's at an early stage of development, and could be made rather more robust.
 
-Downloading
+#Downloading
 
 You can download a pre-built binary of this plugin from the Community Plugins page.
 
